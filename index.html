@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nsTags — Task Board & Management Overview</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --line:#2a2f3a;
+    --text:#e7ebf2; --muted:#9aa3b2; --faint:#6b7280;
+    --p0:#ff5d6c; --p1:#ffb454; --p2:#5fb0ff;
+    --current:#3b82f6; --next:#8b5cf6; --pending:#9aa3b2; --hold:#f59e0b; --done:#22c55e;
+    --late:#ff5d6c; --risk:#f59e0b; --ontrack:#3b82f6; --nodate:#6b7280;
+    --accent:#e0884c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:inherit}
+  header{padding:20px 24px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:linear-gradient(180deg,#12141a,#0f1115);z-index:5}
+  .titlerow{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  h1{margin:0;font-size:20px;letter-spacing:.3px}
+  h1 .star{color:var(--accent)}
+  .sub{color:var(--muted);font-size:12.5px}
+  .updated{margin-left:auto;color:var(--faint);font-size:12px}
+  .counts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .dot{width:8px;height:8px;border-radius:50%}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 24px;border-bottom:1px solid var(--line);background:var(--bg)}
+  .toolbar input[type=search]{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 11px;width:200px;outline:none}
+  .toolbar input[type=search]:focus{border-color:var(--accent)}
+  .seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{background:transparent;border:0;color:var(--muted);padding:7px 12px;cursor:pointer;font-size:12.5px}
+  .seg button.on{background:var(--panel2);color:var(--text)}
+  .filtbtn{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 11px;cursor:pointer;font-size:12px}
+  .filtbtn.on{border-color:var(--accent);color:var(--text)}
+  .grow{flex:1}
+  .act{background:var(--accent);color:#1a1a1a;border:0;border-radius:8px;padding:8px 13px;font-weight:600;cursor:pointer;font-size:12.5px}
+  .act.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:500}
+  main{padding:18px 24px 60px}
+  .board{display:grid;grid-template-columns:repeat(5,minmax(220px,1fr));gap:14px}
+  @media(max-width:1100px){.board{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:640px){.board{grid-template-columns:1fr}}
+  .col{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;min-height:80px}
+  .colhead{display:flex;align-items:center;gap:8px;padding:4px 6px 10px;font-weight:600;font-size:13px}
+  .colhead .n{margin-left:auto;color:var(--faint);font-weight:500;font-size:12px;background:var(--panel2);border-radius:999px;padding:1px 8px}
+  .card{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--line);border-radius:9px;padding:10px 11px;margin-bottom:9px;cursor:default}
+  .card:hover{border-color:#39404e}
+  .card .top{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap}
+  .badge{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:5px;letter-spacing:.3px}
+  .b-p0{background:rgba(255,93,108,.16);color:var(--p0)}
+  .b-p1{background:rgba(255,180,84,.16);color:var(--p1)}
+  .b-p2{background:rgba(95,176,255,.16);color:var(--p2)}
+  .area{font-size:10.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:2px 7px}
+  .card h3{margin:0;font-size:13px;font-weight:600;line-height:1.35}
+  .card p{margin:6px 0 0;color:var(--muted);font-size:12px}
+  .meta{display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--faint);font-size:11px;flex-wrap:wrap}
+  .who{margin-left:auto;border-radius:999px;padding:1px 8px;border:1px solid var(--line)}
+  .who.nitin{color:#ffd9a8}
+  .who.claude{color:#a8d5ff}
+  .mtag{border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--accent)}
+  .list{display:none;flex-direction:column;gap:7px}
+  .list.show{display:flex}
+  .board.hide{display:none}
+  .row{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:9px 12px}
+  .row .st{font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px}
+  .row h3{margin:0;font-size:13px;font-weight:600;flex:1}
+  .row p{margin:0;color:var(--muted);font-size:11.5px;flex-basis:100%;padding-left:0}
+  .s-current{--c:var(--current)} .s-next{--c:var(--next)} .s-pending{--c:var(--pending)} .s-hold{--c:var(--hold)} .s-done{--c:var(--done)}
+  .ttl .dot{background:var(--c)}
+  .card.s-current{border-left-color:var(--current)} .card.s-next{border-left-color:var(--next)}
+  .card.s-pending{border-left-color:var(--pending)} .card.s-hold{border-left-color:var(--hold)} .card.s-done{border-left-color:var(--done);opacity:.72}
+  /* overview */
+  .ov{display:none} .ov.show{display:block}
+  .ovgrid{display:grid;grid-template-columns:repeat(2,minmax(300px,1fr));gap:16px}
+  @media(max-width:760px){.ovgrid{grid-template-columns:1fr}}
+  .panelcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .panelcard h2{margin:0 0 14px;font-size:14px;font-weight:600}
+  .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:120px}
+  .kpi .v{font-size:24px;font-weight:700} .kpi .l{font-size:11.5px;color:var(--muted)}
+  .bar{height:8px;border-radius:6px;background:var(--panel2);overflow:hidden;display:flex}
+  .bar > i{display:block;height:100%}
+  .arearow{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+  .arearow .nm{width:78px;font-size:12px;color:var(--muted)}
+  .arearow .bar{flex:1}
+  .arearow .pc{width:74px;text-align:right;font-size:11.5px;color:var(--faint)}
+  .mile{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:11px;background:var(--panel2)}
+  .mile .mtop{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  .mile h3{margin:0;font-size:13px;font-weight:600;flex:1;min-width:160px}
+  .chip{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:999px;letter-spacing:.2px}
+  .c-done{background:rgba(34,197,94,.16);color:var(--done)}
+  .c-ontrack{background:rgba(59,130,246,.16);color:var(--ontrack)}
+  .c-risk{background:rgba(245,158,11,.16);color:var(--risk)}
+  .c-late{background:rgba(255,93,108,.16);color:var(--late)}
+  .c-nodate{background:rgba(107,114,128,.16);color:var(--nodate)}
+  .mile input[type=date]{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:5px 8px;font-size:12px;outline:none}
+  .mile input[type=date]:focus{border-color:var(--accent)}
+  .mile .mmeta{display:flex;align-items:center;gap:10px;margin-top:8px;color:var(--faint);font-size:11.5px;flex-wrap:wrap}
+  .mile .note{color:var(--muted);font-size:12px;margin:6px 0 0}
+  .addwrap{display:none;margin:0 0 16px;background:var(--panel);border:1px solid var(--accent);border-radius:12px;padding:14px}
+  .addwrap.show{display:block}
+  .addwrap .fields{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .addwrap input,.addwrap select{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 10px;outline:none}
+  .addwrap input.t{flex:1;min-width:220px}
+  .hint{color:var(--faint);font-size:11.5px;margin-top:9px}
+  footer{color:var(--faint);font-size:11.5px;padding:0 24px 40px;max-width:920px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#1a1a1a;padding:9px 16px;border-radius:8px;font-weight:600;font-size:12.5px;opacity:0;transition:.25s;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="titlerow">
+    <h1><span class="star">✦</span> nsTags</h1>
+    <span class="sub">Task board & management overview · iOS · Android · Web · AWS · ESP32</span>
+    <span class="updated" id="updated"></span>
+  </div>
+  <div class="counts" id="counts"></div>
+</header>
+
+<div class="toolbar">
+  <div class="seg">
+    <button id="viewOverview" onclick="setView('overview')">Overview</button>
+    <button id="viewBoard" class="on" onclick="setView('board')">Board</button>
+    <button id="viewList" onclick="setView('list')">Priority list</button>
+  </div>
+  <input type="search" id="search" placeholder="Search tasks…" oninput="render()">
+  <span id="areaFilters" style="display:flex;gap:6px;flex-wrap:wrap"></span>
+  <span class="grow"></span>
+  <button class="act" onclick="toggleAdd()">＋ Add idea</button>
+  <button class="act ghost" onclick="exportJSON()">⧉ Copy JSON</button>
+</div>
+
+<main>
+  <div class="addwrap" id="addwrap">
+    <div class="fields">
+      <input class="t" id="newTitle" placeholder="New idea / task title…">
+      <select id="newArea"></select>
+      <select id="newPrio"><option value="P0">P0 · critical</option><option value="P1" selected>P1 · high</option><option value="P2">P2 · later</option></select>
+      <select id="newStatus">
+        <option value="pending" selected>Pending</option><option value="next">Next / in line</option>
+        <option value="current">Current</option><option value="hold">On hold</option>
+      </select>
+      <button class="act" onclick="addIdea()">Add</button>
+    </div>
+    <div class="hint">Adds a card to this view so you can eyeball it. It lives in your browser only — to make it permanent across sessions, tell me in chat and I'll write it into the board file. Milestone dates you set below ARE saved in your browser.</div>
+  </div>
+
+  <!-- OVERVIEW (birds-eye for management) -->
+  <div class="ov" id="overview">
+    <div class="kpis" id="kpis"></div>
+    <div class="ovgrid">
+      <div class="panelcard">
+        <h2>Delivery milestones <span style="color:var(--faint);font-weight:400;font-size:11.5px">— set a target date; status is computed</span></h2>
+        <div id="miles"></div>
+      </div>
+      <div class="panelcard">
+        <h2>Progress by component</h2>
+        <div id="areas"></div>
+        <h2 style="margin-top:20px">Surfaces of the platform</h2>
+        <div id="surfaces" style="font-size:12.5px;color:var(--muted);line-height:1.8"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="board" id="board"></div>
+  <div class="list" id="list"></div>
+</main>
+
+<footer>
+  Source of truth: the <code>TASKS</code> + <code>MILESTONES</code> lists embedded in this file, maintained by Claude each session and mirrored in 00_PROJECT_STATE / 00_CONTINUATION_HANDOFF / REFINEMENTS_BACKLOG.md. Active build dir: <code>~/Desktop/nsTags_BUILD/</code> (legacy reference: <code>~/Desktop/nsTags_MasterWorkspace/</code>).
+  Statuses: <b>Current</b> · <b>Next</b> · <b>Pending</b> · <b>On hold</b> · <b>Done</b>. Priorities: <b>P0</b> critical · <b>P1</b> high · <b>P2</b> later. Milestone targets save in your browser.
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
+const LAST_UPDATED = "2026-05-31 · session 029";
+const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
+const STATUSES = [
+  {key:"current", label:"Current"},
+  {key:"next",    label:"Next / in line"},
+  {key:"pending", label:"Pending"},
+  {key:"hold",    label:"On hold"},
+  {key:"done",    label:"Done"}
+];
+// Delivery milestones. target:"" = no date set yet (set it in the Overview;
+// it saves in your browser, or tell Claude to bake it into the file).
+const MILESTONES = [
+  {id:"M1", title:"Store app v1 (iOS + Android)", target:"", note:"Feature-complete owner app: occupancy + footfall analytics, nav restructure, cohort, polish."},
+  {id:"M2", title:"Backend on new CDK (parity + retire legacy)", target:"", note:"New AWS CDK to parity; legacy GitHub backend retired."},
+  {id:"M3", title:"Mall / Admin web dashboard + roles", target:"", note:"Net-new web dashboard (replaces the dropped Streamlit POC) + role-based login journeys (store / mall / admin)."},
+  {id:"M4", title:"Field pilot / launch", target:"", note:"Store app + backend in real store use."},
+  {id:"M5", title:"Consumer offers app", target:"", note:"Deferred per ADR-002 until the business app is in field."}
+];
+let TASKS = [
+  // --- Current ---
+  {id:"N40", title:"Build + validate latest iOS & Android builds", area:"Product", prio:"P0", status:"current", who:"Nitin", mile:"M1",
+   note:"Footfall per-hour fix + activity-map reorder + avg-per-day tiles + Weekday card + people-currency redesign. Confirm numbers match across platforms.", added:"05-31"},
+
+  // --- Next / in line ---
+  {id:"N41", title:"Navigation restructure (ADR-026)", area:"Product", prio:"P1", status:"next", who:"Claude", mile:"M1",
+   note:"Dashboard tab 1; Floor activity + Footfall main tabs; Sensors + Alerts → More (badge + Dashboard alert strip). Unblocks Footfall page + unified Dashboard.", added:"05-31"},
+  {id:"N42", title:"Cohort: tab placement + evolve toward guiding-metric tracker", area:"Product", prio:"P1", status:"next", who:"Nitin", mile:"M1",
+   note:"Owner: 'strong start for next is cohort.' Decide top-tab vs More; consider rank + trend + goal + 'what moves me up'.", added:"05-31"},
+  {id:"N43", title:"Dedicated Footfall page (ADR-026)", area:"Product", prio:"P1", status:"next", who:"Claude", mile:"M1",
+   note:"Reuse occupancy tile/colour system. Visitor hero + premium/mass device-mix (softened until classification validated) + entry timing.", added:"05-31"},
+
+  // --- Pending ---
+  {id:"N60", title:"Mall / Admin web dashboard (net-new)", area:"Web", prio:"P1", status:"pending", who:"Claude", mile:"M3",
+   note:"Replaces the dropped Streamlit POC. Mall-operator + admin views. Tech/IA/design ADR first, then build.", added:"05-31"},
+  {id:"N61", title:"Role-based login journeys (store / mall / admin)", area:"Backend", prio:"P1", status:"pending", who:"Claude", mile:"M3",
+   note:"Not built — only entitlement seams exist (mallTier, ownershipModel). Net-new auth/role routing across surfaces.", added:"05-31"},
+  {id:"N62", title:"Backend consolidation: new CDK → parity, retire legacy", area:"Backend", prio:"P1", status:"pending", who:"Claude", mile:"M2",
+   note:"Legacy GitHub backend (MasterWorkspace) → migrate remaining logic onto the new CDK app; decommission old.", added:"05-31"},
+  {id:"N63", title:"Workspace consolidation — single home", area:"Infra", prio:"P2", status:"pending", who:"Nitin", mile:"M2",
+   note:"Active = nsTags_BUILD; legacy = nsTags_MasterWorkspace (pointer note left). Decide whether to physically merge under one tree (needs checkpoint + sign-off).", added:"05-31"},
+  {id:"N44", title:"Unified Dashboard summary (ADR-026)", area:"Product", prio:"P2", status:"pending", who:"Claude", mile:"M1",
+   note:"Narrative headline cards summarising occupancy + footfall + alerts, each linking to its tab. Comes after the tabs exist.", added:"05-31"},
+  {id:"N45", title:"Zone activity (last 24h) redesign", area:"Design", prio:"P1", status:"pending", who:"Claude", mile:"M1",
+   note:"Information getting lost. Mockup-first: lean on the floor-grid heatmap + tap-for-detail; one clear 'what matters' per zone.", added:"05-31"},
+  {id:"N46", title:"Multi-radar scope switcher", area:"Product", prio:"P1", status:"pending", who:"Claude", mile:"M1",
+   note:"Per-radar selector for multi-radar stores. Data keys by device_id. Store rollup deferred (needs overlap model).", added:"05-31"},
+  {id:"N47", title:"Multi-radar store rollup — ADR (overlap model)", area:"Backend", prio:"P1", status:"pending", who:"Claude", mile:"M2",
+   note:"Summing occupancy across overlapping radars double-counts. Decide client-sum vs server rollup + coverage model.", added:"05-31"},
+  {id:"N48", title:"Weekday-card fetch consolidation (cost)", area:"Backend", prio:"P2", status:"pending", who:"Claude", mile:"M2",
+   note:"Fetch the 28-day window once; derive Week, Month + weekday card from it — one read instead of two/three.", added:"05-31"},
+  {id:"N49", title:"Android dead-code prune (snapshot-era cluster)", area:"Android", prio:"P2", status:"pending", who:"Claude", mile:"M1",
+   note:"Remove unused TimeStrip/chartSamples/bucketedMaxOccupancy/old insightSentences cluster. Warnings-only; build loop. iOS prune done.", added:"05-31"},
+  {id:"N50", title:"Footfall sparkline — Y-axis reference", area:"Design", prio:"P2", status:"pending", who:"Claude", mile:"M1",
+   note:"No axis scale → intensity not legible. Add a quiet peak-value label / faint max-0 gutter.", added:"05-31"},
+  {id:"N51", title:"More tab — row order + alignment", area:"Design", prio:"P2", status:"pending", who:"Claude", mile:"M1",
+   note:"Deliberate hierarchy + alignment. Folds into the nav restructure.", added:"05-31"},
+  {id:"N52", title:"Splash + auth first-impression polish", area:"Design", prio:"P2", status:"pending", who:"Claude", mile:"M1",
+   note:"Login + 'Hello nsTags' entry predate the current design bar. Branded splash + design pass.", added:"05-31"},
+  {id:"N70", title:"In-app 'What's New' (changelog / release notes)", area:"Product", prio:"P1", status:"pending", who:"Claude", mile:"M1",
+   note:"Backend-served JSON so copy updates without an app release. Surfaced under More (and a Dashboard nudge on update). Owner-keen.", added:"05-31"},
+  {id:"N71", title:"Customer-facing 'What's coming' roadmap glimpse", area:"Product", prio:"P1", status:"pending", who:"Claude", mile:"M1",
+   note:"Curated, marketing-grade subset of upcoming features to build anticipation — NOT the internal tracker. Soft timing only ('soon'), no internal jargon/dates. Backend-served + curated by owner.", added:"05-31"},
+
+  // --- On hold / parked ---
+  {id:"N54", title:"iOS push delivery (not arriving on device)", area:"Infra", prio:"P1", status:"hold", who:"Nitin", mile:"M1",
+   note:"Backend/creds/settings verified; device/token-side. Parked. Diagnosis in SESSION_LOG addendum.", added:"05-31"},
+  {id:"N55", title:"Radar fan-artifact rejection algo", area:"Firmware", prio:"P2", status:"hold", who:"Claude", mile:"M2",
+   note:"Radar over-detects ceiling fans. Needs micro-Doppler / zone-masking. Pre-retail. v0.2.1 accuracy sketch exists.", added:"05-31"},
+  {id:"N56", title:"Year tab (occupancy)", area:"Backend", prio:"P2", status:"hold", who:"Claude", mile:"M2",
+   note:"Blocked: radar_occupancy_daily has 90-day TTL. Needs a long-retention radar_occupancy_monthly rollup first.", added:"05-31"},
+  {id:"N57", title:"Restore 36.1 AOD build path (Android)", area:"Android", prio:"P2", status:"hold", who:"Nitin", mile:"M1",
+   note:"Temporary: compileSdk pinned to 36 + buildProgressStyle stubbed. Restore once cmdline-tools updated.", added:"05-31"},
+  {id:"N64", title:"Legacy Android app (in-field reporting tool)", area:"Android", prio:"P2", status:"hold", who:"Nitin", mile:"M1",
+   note:"MasterWorkspace 01_CODEBASES/ANDROID_APP — superseded by the new Compose app. Keep as reference until v1 ships.", added:"05-31"},
+  {id:"N65", title:"Consumer offers app", area:"Product", prio:"P2", status:"hold", who:"Claude", mile:"M5",
+   note:"Deferred per ADR-002 until business app is in field. Prototype consumer screens exist in 04_PROTOTYPE.", added:"05-31"},
+  {id:"N66", title:"Streamlit web app — DROPPED (POC only)", area:"Web", prio:"P2", status:"hold", who:"Nitin", mile:"M3",
+   note:"Owner: POC stage only, not used going forward. Superseded by the net-new Mall/Admin dashboard (N60).", added:"05-31"},
+
+  // --- Done (session 029) ---
+  {id:"N20", title:"ADR-025: radar occupancy precompute (table + finalize Lambda)", area:"Backend", prio:"P0", status:"done", who:"Claude", mile:"M1", note:"radar_occupancy_daily (90d TTL) + finalize Lambda. Fixes iOS↔Android divergence at the source. Deployed.", added:"05-30"},
+  {id:"N21", title:"radarOccupancySummary resolver + schema", area:"Backend", prio:"P0", status:"done", who:"Claude", mile:"M1", note:"Tenant-fenced query; clients fetch + sum precomputed rows. Deployed.", added:"05-30"},
+  {id:"N22", title:"Per-slot empty seconds in tod bins (P3c)", area:"Backend", prio:"P1", status:"done", who:"Claude", mile:"M1", note:"Exact avg-people-on-floor denominator. Lambda + schema + decoders; backfilled. Deployed.", added:"05-30"},
+  {id:"N23", title:"iOS Floor Activity → people-currency redesign", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1", note:"People hero, avg-people area chart (Y 0–3+), no seconds in any axis.", added:"05-30"},
+  {id:"N24", title:"Android Floor Activity (P3b + redesign mirror)", area:"Android", prio:"P1", status:"done", who:"Claude", mile:"M1", note:"Migrated off snapshot aggregation to the precomputed summaries + full redesign. iOS == Android.", added:"05-30"},
+  {id:"N25", title:"Time-by-group tiles + filled person pictograms", area:"Design", prio:"P2", status:"done", who:"Claude", mile:"M1", note:"Split bar + per-group tiles (share, avg time/day, visit length), colour-coded, big % own line. Both platforms.", added:"05-31"},
+  {id:"N26", title:"Weekday → standalone 'Busiest days' card", area:"Design", prio:"P2", status:"done", who:"Claude", mile:"M1", note:"Tabs now Today/Week/Month; weekday is its own card. Both platforms.", added:"05-31"},
+  {id:"N27", title:"Avg-per-day tile durations (adaptive units)", area:"Design", prio:"P2", status:"done", who:"Claude", mile:"M1", note:"Comparable across tabs, never exceeds 24h. Both platforms.", added:"05-31"},
+  {id:"N28", title:"Footfall per-hour curve + last-completed-hour dot", area:"Design", prio:"P2", status:"done", who:"Claude", mile:"M1", note:"Reverted a cumulative detour; kept rhythm; dot no longer dips for the partial hour. Both platforms.", added:"05-31"},
+  {id:"N29", title:"Floor activity — live 'activity map' reordered to top", area:"Design", prio:"P2", status:"done", who:"Claude", mile:"M1", note:"At-a-glance 'now' leads; breakdowns below. Both platforms.", added:"05-31"},
+  {id:"N30", title:"iOS dead-code prune (occupancy)", area:"iOS", prio:"P2", status:"done", who:"Claude", mile:"M1", note:"Removed bucketedMaxOccupancy / formatBucketRange / levelLabel.", added:"05-31"},
+  {id:"N31", title:"ADR-026: app information architecture", area:"Product", prio:"P1", status:"done", who:"Claude", mile:"M1", note:"Navigation, dedicated Footfall page, unified Dashboard, Alerts-safety carve-out, deferrals.", added:"05-31"},
+  {id:"N32", title:"nsTags task board + management overview (this file)", area:"Infra", prio:"P2", status:"done", who:"Claude", note:"Living Kanban + birds-eye overview with milestone early/late tracking. Source of truth maintained by Claude.", added:"05-31"}
+];
+/* ===== end source of truth ===== */
+
+const PRIO_ORDER={P0:0,P1:1,P2:2};
+const STATUS_COLOR={current:"var(--current)",next:"var(--next)",pending:"var(--pending)",hold:"var(--hold)",done:"var(--done)"};
+const AREA_COLOR={iOS:"#5fb0ff",Android:"#22c55e",Web:"#e0884c",Backend:"#8b5cf6",Firmware:"#f59e0b",Design:"#ec4899",Product:"#3b82f6",Infra:"#9aa3b2"};
+const LS_KEY="nstags_milestone_targets";
+let view="board", areaFilter=null;
+
+document.getElementById("updated").textContent = "updated "+LAST_UPDATED;
+
+function loadTargets(){ try{return JSON.parse(localStorage.getItem(LS_KEY)||"{}");}catch(e){return {};} }
+function saveTarget(id,val){ const t=loadTargets(); if(val){t[id]=val;} else {delete t[id];} localStorage.setItem(LS_KEY,JSON.stringify(t)); }
+function targetFor(id){ const t=loadTargets(); if(t[id]!==undefined) return t[id]; const m=MILESTONES.find(x=>x.id===id); return m?m.target:""; }
+
+function init(){
+  const sel=document.getElementById("newArea");
+  AREAS.forEach(a=>{const o=document.createElement("option");o.value=a;o.textContent=a;sel.appendChild(o);});
+  const af=document.getElementById("areaFilters");
+  AREAS.forEach(a=>{const b=document.createElement("button");b.className="filtbtn";b.textContent=a;
+    b.onclick=()=>{areaFilter=(areaFilter===a?null:a);[...af.children].forEach(c=>c.classList.toggle("on",c.textContent===areaFilter));render();};
+    af.appendChild(b);});
+  render();
+}
+function setView(v){view=v;
+  document.getElementById("viewOverview").classList.toggle("on",v==="overview");
+  document.getElementById("viewBoard").classList.toggle("on",v==="board");
+  document.getElementById("viewList").classList.toggle("on",v==="list");
+  document.getElementById("overview").classList.toggle("show",v==="overview");
+  document.getElementById("board").classList.toggle("hide",v!=="board");
+  document.getElementById("list").classList.toggle("show",v==="list");
+  render();}
+function toggleAdd(){document.getElementById("addwrap").classList.toggle("show");}
+function q(){return document.getElementById("search").value.trim().toLowerCase();}
+function visible(t){const s=q();
+  if(areaFilter&&t.area!==areaFilter)return false;
+  if(s&&!(t.title+" "+(t.note||"")+" "+t.area+" "+t.id).toLowerCase().includes(s))return false;
+  return true;}
+function sortTasks(a,b){return (PRIO_ORDER[a.prio]-PRIO_ORDER[b.prio])||a.id.localeCompare(b.id);}
+
+function card(t){
+  return `<div class="card s-${t.status}">
+    <div class="top"><span class="badge b-${t.prio.toLowerCase()}">${t.prio}</span><span class="area">${t.area}</span>${t.mile?`<span class="mtag">${t.mile}</span>`:""}</div>
+    <h3>${esc(t.title)}</h3>${t.note?`<p>${esc(t.note)}</p>`:""}
+    <div class="meta"><span>${t.id}</span><span>· ${t.added}</span><span class="who ${t.who.toLowerCase()}">${t.who}</span></div>
+  </div>`;
+}
+function daysUntil(dateStr){
+  if(!dateStr) return null;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const d=new Date(dateStr+"T00:00:00");
+  return Math.round((d-today)/86400000);
+}
+function mileStat(m){
+  const linked=TASKS.filter(t=>t.mile===m.id);
+  const total=linked.length, done=linked.filter(t=>t.status==="done").length;
+  const pct= total? done/total : 0;
+  const target=targetFor(m.id);
+  const days=daysUntil(target);
+  let key,label;
+  if(total>0 && pct>=1){ key="done"; label= (days!==null&&days>=0)?"Done (early)":"Done"; }
+  else if(!target){ key="nodate"; label="No date set"; }
+  else if(days<0){ key="late"; label="Late"; }
+  else if(days<=14 && pct<0.7){ key="risk"; label="At risk"; }
+  else { key="ontrack"; label="On track"; }
+  return {total,done,pct,target,days,key,label};
+}
+function render(){
+  const tasks=TASKS.filter(visible);
+  // counts
+  document.getElementById("counts").innerHTML=STATUSES.map(s=>{
+    const n=TASKS.filter(t=>t.status===s.key).length;
+    return `<span class="pill"><span class="dot" style="background:${STATUS_COLOR[s.key]}"></span>${s.label} <b style="color:var(--text)">${n}</b></span>`;
+  }).join("");
+  // board
+  document.getElementById("board").innerHTML=STATUSES.map(s=>{
+    const items=tasks.filter(t=>t.status===s.key).sort(sortTasks);
+    return `<div class="col s-${s.key} ttl"><div class="colhead"><span class="dot" style="background:${STATUS_COLOR[s.key]}"></span>${s.label}<span class="n">${items.length}</span></div>
+      ${items.map(card).join("")||`<div style="color:var(--faint);font-size:12px;padding:6px">—</div>`}</div>`;
+  }).join("");
+  // list
+  const ordered=[...tasks].sort((a,b)=>sortTasks(a,b)||0);
+  document.getElementById("list").innerHTML=ordered.map(t=>`<div class="row">
+    <span class="badge b-${t.prio.toLowerCase()}">${t.prio}</span>
+    <span class="st" style="background:${STATUS_COLOR[t.status]}22;color:${STATUS_COLOR[t.status]}">${STATUSES.find(s=>s.key===t.status).label}</span>
+    <h3>${esc(t.title)}</h3><span class="area">${t.area}</span>${t.mile?`<span class="mtag">${t.mile}</span>`:""}
+    <span class="who ${t.who.toLowerCase()}">${t.who}</span>${t.note?`<p>${esc(t.note)}</p>`:""}</div>`).join("");
+  if(view==="overview") renderOverview();
+}
+function renderOverview(){
+  const total=TASKS.length, done=TASKS.filter(t=>t.status==="done").length;
+  const active=TASKS.filter(t=>t.status==="current"||t.status==="next").length;
+  const late=MILESTONES.filter(m=>mileStat(m).key==="late").length;
+  const risk=MILESTONES.filter(m=>mileStat(m).key==="risk").length;
+  document.getElementById("kpis").innerHTML=`
+    <div class="kpi"><div class="v">${Math.round(done/total*100)}%</div><div class="l">overall done (${done}/${total})</div></div>
+    <div class="kpi"><div class="v">${active}</div><div class="l">active (current + next)</div></div>
+    <div class="kpi"><div class="v" style="color:${late?'var(--late)':'var(--done)'}">${late}</div><div class="l">milestones late</div></div>
+    <div class="kpi"><div class="v" style="color:${risk?'var(--risk)':'var(--done)'}">${risk}</div><div class="l">milestones at risk</div></div>`;
+  // milestones
+  document.getElementById("miles").innerHTML=MILESTONES.map(m=>{
+    const s=mileStat(m);
+    const pctTxt=s.total?`${s.done}/${s.total} tasks · ${Math.round(s.pct*100)}%`:"no tasks linked";
+    const dlabel = s.target ? (s.days<0?`${-s.days}d overdue`:`${s.days}d left · ${s.target}`) : "set a target →";
+    return `<div class="mile">
+      <div class="mtop"><h3>${esc(m.title)}</h3><span class="chip c-${s.key}">${s.label}</span></div>
+      <div class="bar"><i style="width:${Math.round(s.pct*100)}%;background:var(--${s.key==='late'?'late':s.key==='risk'?'risk':'done'})"></i></div>
+      <div class="mmeta"><span>${m.id}</span><span>· ${pctTxt}</span><span>· ${dlabel}</span>
+        <input type="date" value="${s.target||''}" onchange="saveTarget('${m.id}',this.value);render()"></div>
+      ${m.note?`<p class="note">${esc(m.note)}</p>`:""}
+    </div>`;
+  }).join("");
+  // by component
+  document.getElementById("areas").innerHTML=AREAS.map(a=>{
+    const inA=TASKS.filter(t=>t.area===a); if(!inA.length) return "";
+    const d=inA.filter(t=>t.status==="done").length; const pc=Math.round(d/inA.length*100);
+    return `<div class="arearow"><span class="nm">${a}</span>
+      <span class="bar"><i style="width:${pc}%;background:${AREA_COLOR[a]||'var(--accent)'}"></i></span>
+      <span class="pc">${d}/${inA.length} · ${pc}%</span></div>`;
+  }).join("");
+  document.getElementById("surfaces").innerHTML=`
+    ✦ <b>Store app</b> — iOS + Android (active) · <b>Web dashboard</b> — mall/admin (net-new, M3) · <b>Consumer app</b> — deferred (M5)<br>
+    ✦ <b>Backend</b> — new AWS CDK (active) · legacy GitHub backend (retiring, M2) · <b>Firmware</b> — ESP32 radar/footfall<br>
+    ✦ Streamlit web app = POC, dropped. Active dir: <code>~/Desktop/nsTags_BUILD</code> · legacy: <code>~/Desktop/nsTags_MasterWorkspace</code>`;
+}
+function addIdea(){
+  const title=document.getElementById("newTitle").value.trim();
+  if(!title){flash("Type a title first");return;}
+  const n=TASKS.filter(t=>t.id.startsWith("N")).length+1;
+  TASKS.push({id:"N"+String(n).padStart(2,"0"),title,area:document.getElementById("newArea").value,
+    prio:document.getElementById("newPrio").value,status:document.getElementById("newStatus").value,
+    who:"Nitin",note:"(added in browser — tell Claude to make permanent)",added:new Date().toISOString().slice(5,10)});
+  document.getElementById("newTitle").value="";render();flash("Added — send to Claude to save permanently");
+}
+function exportJSON(){
+  navigator.clipboard.writeText(JSON.stringify({TASKS,MILESTONES,targets:loadTargets()},null,2))
+    .then(()=>flash("Board JSON copied"),()=>flash("Copy failed"));
+}
+function esc(s){return (s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+let tt;function flash(m){const el=document.getElementById("toast");el.textContent=m;el.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>el.classList.remove("show"),2200);}
+init();
+</script>
+</body>
+</html>

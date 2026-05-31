@@ -234,10 +234,12 @@ let TASKS = [
    note:"Deliberate hierarchy + alignment. Folds into the nav restructure.", added:"05-31"},
   {id:"N52", title:"Splash + auth first-impression polish", area:"Design", prio:"P2", status:"pending", who:"Claude", mile:"M1",
    note:"Login + 'Hello nsTags' entry predate the current design bar. Branded splash + design pass.", added:"05-31"},
-  {id:"N70", title:"In-app 'What's New' (changelog / release notes)", area:"Product", prio:"P1", status:"pending", who:"Claude", mile:"M1",
-   note:"Backend-served JSON so copy updates without an app release. Surfaced under More (and a Dashboard nudge on update). Owner-keen.", added:"05-31"},
-  {id:"N71", title:"Customer-facing 'What's coming' roadmap glimpse", area:"Product", prio:"P1", status:"pending", who:"Claude", mile:"M1",
-   note:"Curated, marketing-grade subset of upcoming features to build anticipation — NOT the internal tracker. Soft timing only ('soon'), no internal jargon/dates. Backend-served + curated by owner.", added:"05-31"},
+  {id:"N70", title:"In-app 'What's New' (changelog / release notes)", area:"Product", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"ADR-027. SHIPPED both platforms + backend deployed (app_content table + Query.appContent + seed). More → What's new, with unseen badge + offline cache. Edit app_content_seed.json to update copy (no app release).", added:"05-31"},
+  {id:"N71", title:"Customer-facing 'What's coming' roadmap glimpse", area:"Product", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"ADR-027. SHIPPED with N70 — soft-stage cards (Exploring/Building/Soon), owner-curated, no hard dates. Demand-signal (notify-me) deferred to v2.", added:"05-31"},
+  {id:"N72", title:"Android core-library desugaring (java.time on API 24)", area:"Android", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"Found via lint: java.time used in AlertListScreen/MainTabsScreen with minSdk 24 + no desugaring → crash on Android 7.x. Enabled isCoreLibraryDesugaringEnabled + desugar_jdk_libs 2.1.2. Snapshot saved.", added:"05-31"},
 
   // --- On hold / parked ---
   {id:"N54", title:"iOS push delivery (not arriving on device)", area:"Infra", prio:"P1", status:"hold", who:"Nitin", mile:"M1",

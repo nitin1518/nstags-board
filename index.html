@@ -200,12 +200,18 @@ let TASKS = [
    note:"Footfall per-hour fix + activity-map reorder + avg-per-day tiles + Weekday card + people-currency redesign. Confirm numbers match across platforms.", added:"05-31"},
 
   // --- Next / in line ---
-  {id:"N41", title:"Navigation restructure (ADR-026)", area:"Product", prio:"P1", status:"next", who:"Claude", mile:"M1",
-   note:"Dashboard tab 1; Floor activity + Footfall main tabs; Sensors + Alerts → More (badge + Dashboard alert strip). Unblocks Footfall page + unified Dashboard.", added:"05-31"},
+  {id:"N41", title:"Navigation restructure (ADR-026)", area:"Product", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"SHIPPED both platforms: Dashboard · Floor · Footfall · Cohort · More. Sensors + Alerts → More (back bar on Android); push deep-link routing remapped (alert modal is tab-independent). Floor = device-resolving wrapper; Footfall = existing history view. Deferred follow-on: Dashboard alert strip + More unacked badge (N82).", added:"05-31"},
   {id:"N42", title:"Cohort: tab placement + evolve toward guiding-metric tracker", area:"Product", prio:"P1", status:"next", who:"Nitin", mile:"M1",
    note:"Owner: 'strong start for next is cohort.' Decide top-tab vs More; consider rank + trend + goal + 'what moves me up'.", added:"05-31"},
-  {id:"N43", title:"Dedicated Footfall page (ADR-026)", area:"Product", prio:"P1", status:"next", who:"Claude", mile:"M1",
-   note:"Reuse occupancy tile/colour system. Visitor hero + premium/mass device-mix (softened until classification validated) + entry timing.", added:"05-31"},
+  {id:"N43", title:"Dedicated Footfall page (ADR-026)", area:"Product", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"Footfall is now a bottom tab (wraps the existing history view) via the nav restructure. Analytics enhancement tracked separately as N80.", added:"05-31"},
+  {id:"N80", title:"Footfall analytics enhancement (ADR-028)", area:"Product", prio:"P1", status:"next", who:"Claude", mile:"M1",
+   note:"Y-axis DONE (N50). Remaining = the breakdown. FINDING: the footfall hourly path reads the by_ingest_ts GSI which is KEYS_ONLY (no br/cid/v2/du/zn), so the breakdown needs a BASE-table read for 'today' (bounded to the device's rows) + a daily precompute (footfall_breakdown_daily, ADR-025 pattern) for week/month. Build: computeBreakdownIST + lift categoriseCid into a shared module + new GraphQL types/fields + estimation fixes (dwell-minimum, setup-mode subtraction) → iOS + Android cards (device-mix, dwell tiers, zone funnel). ADR-025-scale; do with a build/verify loop.", added:"05-31"},
+  {id:"N81", title:"Footfall source/signal refinement (ADR-029)", area:"Firmware", prio:"P1", status:"pending", who:"Claude", mile:"M2",
+   note:"Payload fingerprinting + on-device hash → dedup rotating MACs + repeat-visitor; co-mover clustering; self-learning static denylist; radar↔BLE calibration. Phase B is firmware-gated; validate vs radar before headlining unique counts.", added:"05-31"},
+  {id:"N82", title:"Nav follow-on: Dashboard alert strip + More badge", area:"Design", prio:"P2", status:"pending", who:"Claude", mile:"M1",
+   note:"ADR-026 alert-safety: a Dashboard strip of recent unacked alerts + an unacked-alerts badge on the More tab, so urgency isn't lost now that Alerts is in More.", added:"05-31"},
 
   // --- Pending ---
   {id:"N60", title:"Mall / Admin web dashboard (net-new)", area:"Web", prio:"P1", status:"pending", who:"Claude", mile:"M3",
@@ -228,8 +234,8 @@ let TASKS = [
    note:"Fetch the 28-day window once; derive Week, Month + weekday card from it — one read instead of two/three.", added:"05-31"},
   {id:"N49", title:"Android dead-code prune (snapshot-era cluster)", area:"Android", prio:"P2", status:"pending", who:"Claude", mile:"M1",
    note:"Remove unused TimeStrip/chartSamples/bucketedMaxOccupancy/old insightSentences cluster. Warnings-only; build loop. iOS prune done.", added:"05-31"},
-  {id:"N50", title:"Footfall sparkline — Y-axis reference", area:"Design", prio:"P2", status:"pending", who:"Claude", mile:"M1",
-   note:"No axis scale → intensity not legible. Add a quiet peak-value label / faint max-0 gutter.", added:"05-31"},
+  {id:"N50", title:"Footfall sparkline — Y-axis reference", area:"Design", prio:"P2", status:"done", who:"Claude", mile:"M1",
+   note:"DONE both platforms — reusable NSSparkline showYAxis gutter (peak + 0), wired on the footfall card.", added:"05-31"},
   {id:"N51", title:"More tab — row order + alignment", area:"Design", prio:"P2", status:"pending", who:"Claude", mile:"M1",
    note:"Deliberate hierarchy + alignment. Folds into the nav restructure.", added:"05-31"},
   {id:"N52", title:"Splash + auth first-impression polish", area:"Design", prio:"P2", status:"pending", who:"Claude", mile:"M1",

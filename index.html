@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-05-31 · session 029";
+const LAST_UPDATED = "2026-06-10 · session 034";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -196,8 +196,24 @@ const MILESTONES = [
 ];
 let TASKS = [
   // --- Current ---
-  {id:"N40", title:"Build + validate latest iOS & Android builds", area:"Product", prio:"P0", status:"current", who:"Nitin", mile:"M1",
-   note:"Footfall per-hour fix + activity-map reorder + avg-per-day tiles + Weekday card + people-currency redesign. Confirm numbers match across platforms.", added:"05-31"},
+  {id:"N91", title:"Local-first cache lane: occupancy + zone", area:"Product", prio:"P0", status:"current", who:"Nitin", mile:"M1",
+   note:"BUILT + DEPLOYED 06-10 (radarZoneDaily +1 resolver, CFN 491; RadarDailyCacheStore both platforms; instant open + tab-switch; 5-min foreground heal; 14d retention clamp; wipe hooks). Remaining: owner on-device verification checklist, then mark done.", added:"06-10"},
+  {id:"N95", title:"Zone tag unification (grid = summary = list)", area:"Design", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"Owner-reported contradiction: list's legacy ladder 'Hot spot' (top-2 dwell+traversals) vs grid's 'Hot spot' (highest peak). List now reuses the grid's Busiest/Hot spot/Sticky source of truth; richer chips parked in REFINEMENTS_BACKLOG.", added:"06-10"},
+  {id:"N96", title:"Offline-alert phantom fix (NITIN_TEST sentinel)", area:"Backend", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"DEVICE_OFFLINE_SECONDS fired forever on a never-reporting test store_id via the 999999999s sentinel (46 alerts). Evaluator: never_seen + devices-registry fallback (real device named in alerts). Apps: humanized reading line. Deployed 06-10.", added:"06-10"},
+
+  // --- Next / in line (session 034) ---
+  {id:"N92", title:"ADR-038 PR4 — footfall IST backfill + cutover", area:"Backend", prio:"P1", status:"next", who:"Nitin", mile:"M2",
+   note:"backfill-adr038-ist.sh → FOOTFALL_DAY_TZ=IST deploy → rebuild apps → soak → retire UTC sink (~1 more CFN resource freed).", added:"06-10"},
+  {id:"N93", title:"2nd board → real cohort", area:"Backend", prio:"P2", status:"pending", who:"Nitin", mile:"M1",
+   note:"Second sensor board joins a real cohort for cross-store comparison.", added:"06-10"},
+  {id:"N94", title:"Hard-delete orphaned wow_delta_pack table", area:"Infra", prio:"P2", status:"pending", who:"Nitin", mile:"M2",
+   note:"Physical DDB table orphaned by ADR-038 PR2 (RETAIN). Delete after soak confirms nothing reads it.", added:"06-10"},
+  {id:"N90", title:"#3b spatial floor-grid zone visual (Floor)", area:"Product", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"DEPLOYED + VERIFIED LIVE 06-10 both platforms. radarZoneSummary → RadarZoneSummaryResult wrapper (axes for offline grid layout); X×Y shaded grid + tags + entrance marker + tap-detail above the ranked list. CFN stayed 489.", added:"06-10"},
+  {id:"N40", title:"Build + validate latest iOS & Android builds", area:"Product", prio:"P0", status:"done", who:"Nitin", mile:"M1",
+   note:"DONE through session 034: builds validated repeatedly (latest: #3b verify on SM-F721B + iPhone, 06-10).", added:"05-31"},
 
   // --- Next / in line ---
   {id:"N41", title:"Navigation restructure (ADR-026)", area:"Product", prio:"P1", status:"done", who:"Claude", mile:"M1",
@@ -224,8 +240,8 @@ let TASKS = [
    note:"Active = nsTags_BUILD; legacy = nsTags_MasterWorkspace (pointer note left). Decide whether to physically merge under one tree (needs checkpoint + sign-off).", added:"05-31"},
   {id:"N44", title:"Unified Dashboard summary (ADR-026)", area:"Product", prio:"P2", status:"pending", who:"Claude", mile:"M1",
    note:"Narrative headline cards summarising occupancy + footfall + alerts, each linking to its tab. Comes after the tabs exist.", added:"05-31"},
-  {id:"N45", title:"Zone activity (last 24h) redesign", area:"Design", prio:"P1", status:"pending", who:"Claude", mile:"M1",
-   note:"Information getting lost. Mockup-first: lean on the floor-grid heatmap + tap-for-detail; one clear 'what matters' per zone.", added:"05-31"},
+  {id:"N45", title:"Zone activity (last 24h) redesign", area:"Design", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"REALISED as #3b (N90): spatial floor-grid + tap-for-detail + Busiest/Stickiest/Hot-spot summary, period-aware (Today/Week/Month) via radar_zone_daily precompute. Verified live 06-10.", added:"05-31"},
   {id:"N46", title:"Multi-radar scope switcher", area:"Product", prio:"P1", status:"pending", who:"Claude", mile:"M1",
    note:"Per-radar selector for multi-radar stores. Data keys by device_id. Store rollup deferred (needs overlap model).", added:"05-31"},
   {id:"N47", title:"Multi-radar store rollup — ADR (overlap model)", area:"Backend", prio:"P1", status:"pending", who:"Claude", mile:"M2",

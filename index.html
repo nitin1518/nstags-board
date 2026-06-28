@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-06-28 · session 043";
+const LAST_UPDATED = "2026-06-28 · session 043 (+ nsTags Bible)";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -195,6 +195,10 @@ const MILESTONES = [
   {id:"M5", title:"Consumer offers app", target:"", note:"Deferred per ADR-002 until the business app is in field."}
 ];
 let TASKS = [
+  // --- Session 043 cont. (2026-06-28) — the nsTags Bible ---
+  {id:"S43BIBLE", title:"nsTags Bible — full replicable doc stack (10_BIBLE/, V0–V13)", area:"Product", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"Comprehensive end-to-end documentation: firmware (full v0.3.1 walkthrough), backend (~60 lambdas/58 tables), metric logic, mobile (full login/biometric/floor), design system, brand HQ, privacy/DPDP, install, ops, ADR digest, replication guide + FUTURE_SCOPE. Committed/pushed per volume.", added:"06-28"},
+
   // --- Session 043 (2026-06-28) ---
   {id:"S43A", title:"In-app radar range control (near/far/width)", area:"Backend", prio:"P1", status:"current", who:"Nitin", mile:"M1",
    note:"setRadarCountBox (radar-installation lambda + schema + NsTagsRadarStack resolver) DEPLOYED LIVE; Android + iOS 'Detection range (advanced)' card built. Owner: Gradle + Xcode build + verify on device.", added:"06-28"},

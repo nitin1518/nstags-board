@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-06-10 · session 034";
+const LAST_UPDATED = "2026-06-28 · session 043";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -195,6 +195,24 @@ const MILESTONES = [
   {id:"M5", title:"Consumer offers app", target:"", note:"Deferred per ADR-002 until the business app is in field."}
 ];
 let TASKS = [
+  // --- Session 043 (2026-06-28) ---
+  {id:"S43A", title:"In-app radar range control (near/far/width)", area:"Backend", prio:"P1", status:"current", who:"Nitin", mile:"M1",
+   note:"setRadarCountBox (radar-installation lambda + schema + NsTagsRadarStack resolver) DEPLOYED LIVE; Android + iOS 'Detection range (advanced)' card built. Owner: Gradle + Xcode build + verify on device.", added:"06-28"},
+  {id:"S43B", title:"Splash + launch screens (both apps)", area:"Design", prio:"P1", status:"current", who:"Nitin", mile:"M1",
+   note:"Dark launch window → in-app wordmark splash; Android 12 system-splash icon suppressed (values-v31) so the wordmark shows once. Owner builds.", added:"06-28"},
+  {id:"S43C", title:"App icon (from wordmark) + iOS app name 'nsTags'", area:"Design", prio:"P1", status:"current", who:"Nitin", mile:"M1",
+   note:"iOS AppIcon1024 + Android legacy/adaptive icons on #13110E; CFBundleDisplayName=nsTags. Owner builds.", added:"06-28"},
+  {id:"S43D", title:"Production login (biometric vault + remember email)", area:"Product", prio:"P0", status:"current", who:"Nitin", mile:"M1",
+   note:"Branded login as signed-out root, Face ID/fingerprint quick sign-in (password biometry-gated), remembered email. Android: +androidx.biometric, MainActivity→FragmentActivity. Owner: Gradle sync + builds.", added:"06-28"},
+  {id:"S43E", title:"Commit + push session 043 (ALL uncommitted)", area:"Infra", prio:"P0", status:"next", who:"Nitin", mile:"M1",
+   note:"setRadarCountBox deployed live with no commit behind it; all app/icon/splash/login/ADR work uncommitted. rm -f .git/index.lock if present → git add -A → commit → push.", added:"06-28"},
+  {id:"S43F", title:"ADR-056 Inc 3 — target-trail (gate NOT passed)", area:"Product", prio:"P2", status:"next", who:"Nitin", mile:"M1",
+   note:"Run a CLEAN single-person moving walk → analyze --counted. If pass, apply pre-staged read-path change (project COUNTED targets) + build trail (stitch by proximity, not id). See INCREMENT3_GATE_AND_STAGED_CHANGE.md.", added:"06-28"},
+  {id:"S43G", title:"ADR-057 V1 — multi-sensor floor overview", area:"Product", prio:"P2", status:"pending", who:"Claude", mile:"M1",
+   note:"Store rollup + per-sensor cards (type/cap-honest) → drill into existing per-sensor floor map; add per-sensor zone name for non-overlapping totals. V2 spatial map = deferred draft.", added:"06-28"},
+  {id:"S43H", title:"Full-scale count box + clean-walk ghost check (task #5)", area:"Firmware", prio:"P2", status:"pending", who:"Nitin", mile:"M1",
+   note:"Owner shadow command (x ±3500, y −200..6800) or via the new in-app control; re-measure ghost rate on the clean walk.", added:"06-28"},
+
   // --- Current ---
   {id:"N91", title:"Local-first cache lane: occupancy + zone", area:"Product", prio:"P0", status:"current", who:"Nitin", mile:"M1",
    note:"BUILT + DEPLOYED 06-10 (radarZoneDaily +1 resolver, CFN 491; RadarDailyCacheStore both platforms; instant open + tab-switch; 5-min foreground heal; 14d retention clamp; wipe hooks). Remaining: owner on-device verification checklist, then mark done.", added:"06-10"},

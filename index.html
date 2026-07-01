@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-06-28 · session 043 (+ nsTags Bible)";
+const LAST_UPDATED = "2026-07-01 · sessions 044–045 (R7/R8 dashboard redesign + copy guardrails)";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -195,6 +195,18 @@ const MILESTONES = [
   {id:"M5", title:"Consumer offers app", target:"", note:"Deferred per ADR-002 until the business app is in field."}
 ];
 let TASKS = [
+  // --- Sessions 044–045 (2026-07-01) — R7/R8 Phase 4 + Dashboard redesign ---
+  {id:"S45COPY", title:"Pre-production copy scrub (em-dashes + hardware terms)", area:"Design", prio:"P1", status:"pending", who:"Claude", mile:"M4",
+   note:"RELEASE BLOCKER. ~43 iOS + 19 Android user-facing em-dash strings + insight-generator templates (footfall-insights-handler, needs redeploy); many 'radar/BLE/60GHz' user-facing strings to reword. Gate via 01_DECISIONS/PRE_PRODUCTION_COPY_AND_DESIGN_CHECK.md grep before release.", added:"07-01"},
+  {id:"S45DASH", title:"Dashboard redesign — ADR-061 summary → ADR-062 bento 'Pulse'", area:"iOS", prio:"P1", status:"current", who:"Nitin", mile:"M1",
+   note:"Both platforms BUILT: lead story, Today's Pulse (nsHero + sparkline + projection), This week (WoW+ghost bars+streak), Vs peers ring, Floor rhythm ribbon, honest environment. Owner rebuild latest tweaks (Android first, then iOS). Pulse tile still needs minor fine-tuning; tile tints pending.", added:"07-01"},
+  {id:"S45FF", title:"Footfall IST-sink producer fix", area:"Backend", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"footfall-breakdown-finalize now refreshes both UTC+IST sinks daily; IST table was stale since 06-10 (empty windows). DEPLOYED + backfilled (06-10..06-30).", added:"07-01"},
+  {id:"S45DESIGN", title:"Claude Design owes: Insights design + ADR-057 V2 floor map", area:"Design", prio:"P2", status:"pending", who:"Claude", mile:"M1",
+   note:"Insights design (plan/tier dependent; reserved NSInsightSlot exists) + ADR-057 V2 spatial floor-plan map (draft). Commission new design rounds. Also open: theme-picker UI + NSComponentCatalog registration + attendance-calendar token restyle.", added:"07-01"},
+  {id:"S45WN", title:"Publish refreshed What's New + Phase B/C rollups", area:"Backend", prio:"P3", status:"pending", who:"Nitin", mile:"M1",
+   note:"Run seed-app-content.py once new builds ship. Deferred: Phase B footfall_hourly_daily ('this hour vs last week'); Phase C sensor_env_daily (temp trends).", added:"07-01"},
+
   // --- Session 043 cont. (2026-06-28) — the nsTags Bible ---
   {id:"S43BIBLE", title:"nsTags Bible — full replicable doc stack (10_BIBLE/, V0–V13)", area:"Product", prio:"P1", status:"done", who:"Claude", mile:"M1",
    note:"Comprehensive end-to-end documentation: firmware (full v0.3.1 walkthrough), backend (~60 lambdas/58 tables), metric logic, mobile (full login/biometric/floor), design system, brand HQ, privacy/DPDP, install, ops, ADR digest, replication guide + FUTURE_SCOPE. Committed/pushed per volume.", added:"06-28"},

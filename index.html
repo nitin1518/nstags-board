@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-07-02 · session 046 (design-adjacent build, copy scrub DONE, Pulse fixes, Insights design delivered)";
+const LAST_UPDATED = "2026-07-04 · session 048 (What's New seed refreshed + Phase C environment rollup LIVE + 'Store environment' Dashboard tile verified on iOS)";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -195,9 +195,30 @@ const MILESTONES = [
   {id:"M5", title:"Consumer offers app", target:"", note:"Deferred per ADR-002 until the business app is in field."}
 ];
 let TASKS = [
+  // --- Session 047 (2026-07-02/03) — Insights shipped end-to-end + Phase B ---
+  {id:"S47INS", title:"Insights Phase 1 + 1.1 + 1.2 (nudges, gating, plans showcase, card anatomy, states)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"Both platforms, owner-compiled, ON DEVICE. NSUpgradeNudge + InsightGating (one nudge/surface, FREE keeps a real read, fail-open), plan-aware Dashboard read, gated Footfall stack, FREE→ULTRA plans showcase with EXAMPLE READs, designed card anatomy (glyph + mono label + NSCompare chips + serif question), forming/loading/error states. Dashboard note-capture skipped (ADR-039 stands).", added:"07-03"},
+  {id:"S47P2", title:"Insights Phase 2 backend — cohort / wow / cross-signal reads + canonical flags", area:"Backend", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"DEPLOYED LIVE + verified. Deterministic copy, server-side plan gate, flags in recomputer fallback AND live pricing_plans rows. NITIN_OFFICE_01 deliberately ULTRA (owner-dogfood-ultra row, do NOT clean up). Recomputer direct invoke needs source:'direct'. Runbook 03_BACKEND/2026-07-02_insights_phase2_deploy_runbook.md.", added:"07-03"},
+  {id:"S47PB", title:"Phase B — hourly rollup + REAL Pulse intraday forecast", area:"Backend", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"DEPLOYED LIVE + verified on device (~483 on-pace). footfall_hourly_daily + FootfallHourlyRollupFinalize (nightly 04:45 IST, Athena/lake) in NsTagsFootfallRollupStack (backend stack held 497/500). footfallToday typical/projected fields; dashed Pulse curve + projected legend; TODAY read 'typical Friday by this time' + steady read. Fixed live: [Int!] float serialization, Z-Flip legend wrap. Runbook 03_BACKEND/2026-07-02_phaseB_hourly_rollup_deploy_runbook.md.", added:"07-03"},
+  {id:"S47SHIP", title:"Ship 047 tail: Android + iOS rebuild (legend fix) + final commit/push", area:"Android", prio:"P0", status:"done", who:"Nitin", mile:"M1",
+   note:"Committed 95321e4 + earlier. Insights design 100% live end-to-end.", added:"07-03"},
+  {id:"S47NEXT", title:"ULTRA export/audit-pack insight summary + hourly-pattern reads", area:"Backend", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"BOTH DEPLOYED LIVE (047 cont). insightSummaryExport → 2-sheet .xlsx base64, CROSS_SIGNAL-gated, resolver in NsTagsFootfallRollupStack (that stack now ALWAYS deploys with -c appsyncApiId). hourly_pattern read STARTER+, verified honest-silent on the office store (18-20% vs the 30% bar, kept). Insights design = 100% implemented; only deferred note-capture (ADR-039) remains.", added:"07-03"},
+
+  // --- Session 048 (2026-07-04) — What's New refresh + Phase C environment rollup ---
+  {id:"S48WN", title:"What's New seed refresh (047 features)", area:"Backend", prio:"P2", status:"done", who:"Claude", mile:"M1",
+   note:"COMMITTED 7341918; PUBLISH PENDING (owner runs seed-app-content.py). Five new 10.2 entries: Pulse forecast, deeper reads, ULTRA export, plans showcase, card redesign. JSON + copy gate validated; newest id changed → unseen badge fires. ADR-027 runtime content, no app release.", added:"07-04"},
+  {id:"S48PC", title:"Phase C — environment rollup (sensor_env_daily) + environmentTrend", area:"Backend", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"DEPLOYED LIVE + tile verified on iOS. ADR-063: env only in live_summary (24h TTL, no lake copy) → HOURLY fold not nightly. sensor_env_daily + SensorEnvRollupFinalize (:35 UTC=:05 IST, catchup cap 22) + EnvTrendHandler/Query.environmentTrend, all in NsTagsFootfallRollupStack (497/500 held). Primary-device = ble_node F09E9E22BB44 (radar has no env). Catchup 22h → 44 rows. Runbook 03_BACKEND/2026-07-04_phaseC_env_rollup_deploy_runbook.md.", added:"07-04"},
+  {id:"S48TILE", title:"Dashboard 'Store environment' tile (Android + iOS)", area:"iOS", prio:"P1", status:"current", who:"Nitin", mile:"M1",
+   note:"Source complete both platforms; iOS BUILT + VERIFIED (band 37-42°C, '1 of 7 days'). Hourly min..max envelope + avg line (gaps stay gaps), honest-silent when no data, not in the 60s loop. UNCOMMITTED at close; ANDROID BUILD PENDING; commit+push then build Android.", added:"07-04"},
+  {id:"S48NEXT", title:"Next queue: ADR-056 Inc 3 walk · note-capture · temp×footfall read", area:"Product", prio:"P1", status:"next", who:"Nitin", mile:"M1",
+   note:"Inc 3 = owner's clean single-person MOVING walk → target-trail gate → trails + floor-map V2 (options parked). Dashboard note-capture (ADR-039) if owner reopens. Temp×footfall cross-signal ('colder days run quieter') once ~7d env history accrues (~2026-07-11). ADR-057 V2 floor map when scoped.", added:"07-04"},
   // --- Session 046 (2026-07-02) — design-adjacent build + copy scrub + Pulse fixes + Insights design ---
-  {id:"S46INS", title:"Implement Insights design — Phase 1 (NSUpgradeNudge + FREE/STARTER reads)", area:"iOS", prio:"P1", status:"next", who:"Claude", mile:"M1",
-   note:"Design DELIVERED + organized: 04_BUSINESS/design_outputs/2026-07-02_insights/OUTPUTS/. Build NSUpgradeNudge (both platforms) + wire FREE/STARTER reads into the reserved NSInsightSlot + Footfall slots (existing generated content). Gating: one nudge/surface, never replace a real read. Phase 2 = backend emits cohort/WoW/cross-signal for PRO/ULTRA.", added:"07-02"},
+  {id:"S46INS", title:"Implement Insights design — Phase 1 (NSUpgradeNudge + FREE/STARTER reads)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"DONE in session 047 (see S47INS). Design source: 04_BUSINESS/design_outputs/2026-07-02_insights/OUTPUTS/.", added:"07-02"},
   {id:"S46BUILD", title:"Design-adjacent build (theme-picker, catalog, attendance restyle, pulse tint)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",
    note:"Both platforms, source complete. Theme-picker (Signal/Pulse/Brass) under More→Settings + iOS live-accent re-mount (NSThemeBus) — confirmed on device. 10 components in NSComponentCatalog. Attendance-calendar token restyle. Pulse hero → NSCardTone.Accent. Owner: rebuild.", added:"07-02"},
   {id:"S46PULSE", title:"Pulse chart fixes (stops at now, live pace, colour, forecast removed)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",

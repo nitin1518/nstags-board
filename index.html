@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-07-04 · session 049 CLOSED (Dashboard Pulse cross-signal layer SHIPPED: marketing scorecard + ranked lead story + legend/colour fixes + thin-data guards LIVE; footfall×temp cross-signal read DEPLOYED, ships dormant)";
+const LAST_UPDATED = "2026-07-04 · session 050 CLOSED (ADR-064 Dashboard note-capture: shared insight card both apps, capture in place, reflect-bounce gone; Bible synced 046-050; OWNER BUILDS + COMMIT PENDING)";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -228,8 +228,16 @@ let TASKS = [
    note:"LIVE. enoughDay (≥3 open hrs AND ≥15% span) holds projected line + 'On pace' + 'vs usual' + lead-story today-vs-typical. VsPeers cohort<3 → 'Not enough nearby stores to rank yet'. Pulse model verified correct; these guard presentation. Commit 0421480.", added:"07-04"},
   {id:"S49TEMP", title:"Footfall×temperature cross-signal read (backend)", area:"Backend", prio:"P1", status:"done", who:"Claude", mile:"M1",
    note:"DEPLOYED LIVE (NsTagsBackendStack, owner-run) + office MONTH/YEAR footfall_insights rows deleted to regen. tempFootfallCandidate pairs sensor_env_daily.t_avg × footfall_breakdown_daily per IST day, median split, emits crosssignal_temp_quiet/_busy at ≥12% gap (guards ≥10 days/≥3°C). CROSS_SIGNAL, MONTH/YEAR, no app change. SHIPS DORMANT (~2026-07-18). Committed 74d5f0e. Runbook 03_BACKEND/2026-07-04_insights_temp_crosssignal_deploy_runbook.md.", added:"07-04"},
-  {id:"S49NEXT", title:"Next queue: ADR-056 Inc 3 walk · note-capture · AI-phrased lead story", area:"Product", prio:"P1", status:"next", who:"Nitin", mile:"M1",
-   note:"Inc 3 = clean single-person MOVING walk → target-trail gate → trails + floor-map V2 (options parked). Dashboard note-capture (ADR-039) if owner reopens. AI-phrased lead story = cached Bedrock layer over the ranked engine. Optional: early-day guard on the 'This week -47%' partial-week card. ADR-057 V2 floor map when scoped.", added:"07-04"},
+  {id:"S49NEXT", title:"Next queue: AI-phrased lead story · ADR-056 Inc 3 walk · partial-week guard", area:"Product", prio:"P1", status:"next", who:"Nitin", mile:"M1",
+   note:"Note-capture DONE in 050 (ADR-064). Remaining: AI-phrased lead story = cached Bedrock layer over the ranked engine. Inc 3 = clean single-person MOVING walk → target-trail gate → trails + floor-map V2 (options parked). Optional: early-day guard on the 'This week -47%' partial-week card. ADR-057 V2 floor map when scoped.", added:"07-04"},
+
+  // --- Session 050 (2026-07-04) — ADR-064 Dashboard note-capture ---
+  {id:"S50NOTE", title:"ADR-064 — Dashboard note-capture via ONE shared insight card (both apps)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"SOURCE COMPLETE (client-only, zero backend/spend — ADR-030 loop was already live). Dashboard lead read = the shared card in a leadRead variant (accent tint, no keyline): chips + note + save + prior recall IN PLACE; reflect-bounce + onOpenFootfall deleted. iOS THREE copies → InsightReadCard (self-contained; .id(insightKey) outside ForEach); Android InsightCard + leadRead flag. Echo shows note-only answers + relative age. TODAY volume chip → 'vs a typical day' (latent mislabel fixed). Rollback: _snapshots/*__before_dash_notecapture__20260704_083155.*", added:"07-04"},
+  {id:"S50BIBLE", title:"Bible synced through 050 (046-049 by parallel pass + 050 delta)", area:"Product", prio:"P2", status:"done", who:"Claude", mile:"M1",
+   note:"Parallel owner-directed session synced 046-049 (untouched). 050 delta added: V0 INDEX covers-through + delta para, V6/01 new §11 + annotations, V7 §13 update, V12 62 ADRs + 064 bullet, V5 §14 chip note, FUTURE_SCOPE note-capture → DONE. ADR-064 file + 01_DECISIONS/INDEX row; IMPLEMENTATION_HANDOFF 050 block (Insights design = 100% implemented).", added:"07-04"},
+  {id:"S50SHIP", title:"Ship 050: clear index.lock → commit+push → Android build → iOS build → verify", area:"Android", prio:"P0", status:"current", who:"Nitin", mile:"M1",
+   note:"Stale .git/index.lock from the parallel Bible session blocks the commit — remove it first (only if no git is running). ONE commit covers Bible 046-049 sync + all of 050 (single-quoted message). Then ./gradlew :app:assembleDebug (the real @Composable gate), then Xcode. On device: note a chip+note on the Dashboard card, relaunch, see 'Last time, you noted…' with age.", added:"07-04"},
   // --- Session 046 (2026-07-02) — design-adjacent build + copy scrub + Pulse fixes + Insights design ---
   {id:"S46INS", title:"Implement Insights design — Phase 1 (NSUpgradeNudge + FREE/STARTER reads)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",
    note:"DONE in session 047 (see S47INS). Design source: 04_BUSINESS/design_outputs/2026-07-02_insights/OUTPUTS/.", added:"07-02"},

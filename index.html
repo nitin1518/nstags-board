@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-07-04 · session 051 CLOSED (ADMIN PORTAL arc: ADR-066/067 ratified · design rounds 1-3 + mockup + implementation notes · NsTagsAdminStack Inc 0 DEPLOYED LIVE, owner signed in as OWNER_ADMIN via MFA · Inc 1 next · ADR-064 app builds STILL pending)";
+const LAST_UPDATED = "2026-07-04 · session 051+ CLOSED (ADMIN PORTAL arc: ADR-066/067 · design rounds 1-3 · Inc 0 LIVE · admin.nstags.com DEPLOYED + owner signed in IN PRODUCTION · Inc 1 next · ADR-064 app builds STILL pending)";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -252,8 +252,8 @@ let TASKS = [
    note:"18 resources: nstags-staff pool (MFA REQUIRED TOTP, invite-only, pwd≥14, SRP-only client) · admin AppSync API i6qnjmnu35gv5lxm6txk46rsoy (own schema, NO -c flag) · tables staff_roles/admin_fleet_rollup/diagnostic_runs(+GSI1)/diag_flags/claim_codes · _shared/staff-auth.ts (fail-closed) · admin-query-handler (adminMe + adminAuditSearch; admin_audit_log via literal ARN; backend stack untouched 497/500). Shell cdk/web/admin (vendored cognito lib). Owner seeded OWNER_ADMIN (sub 01e36d5a-…) + verified sign-in E2E. Idle $0, no schedules. Runbook 03_BACKEND/2026-07-04_admin_portal_inc0_runbook.md. Negative test skipped (fail-closed visible in code).", added:"07-04"},
   {id:"S51INC1", title:"Admin Portal Inc 1 — fleet rollup + league/drill/device + read-only diagnosis", area:"Backend", prio:"P0", status:"next", who:"Claude", mile:"M3",
    note:"NEXT SESSION'S TASK. AdminFleetRollup lambda (hourly + on-demand, keyed reads, health rubric in implementation_notes §3) → admin_fleet_rollup rows; extend admin-schema + query handler (adminFleet/adminTenant/adminDevice/adminRuns); diagnostics-engine lambda with the 5 read-only playbooks (checks get a READ-ONLY client); portal SPA v1 replaces the shell (mockup IS the visual spec). Read implementation_notes.md first. Cost: the hourly rollup rule = first recurring cost, flag at close.", added:"07-04"},
-  {id:"S51HOST", title:"admin.nstags.com hosting — console lane (Free plan $0)", area:"Infra", prio:"P2", status:"pending", who:"Claude+Nitin", mile:"M3",
-   note:"Deferrable; local shell works. ACM us-east-1 cert → GoDaddy validation CNAME → private bucket nstags-admin-portal-prod → CloudFront FREE plan (console-only option — why hosting is not CDK) + OAC + 403→index → GoDaddy admin CNAME. Claude drives Chrome, owner enters codes (website pattern). Runbook §5.", added:"07-04"},
+  {id:"S51HOST", title:"admin.nstags.com hosting — DEPLOYED LIVE + production sign-in verified", area:"Infra", prio:"P2", status:"done", who:"Claude+Nitin", mile:"M3",
+   note:"LIVE at https://admin.nstags.com (051 continuation; Claude drove Chrome, owner entered 2 GoDaddy codes). Cert e28fff61 ISSUED (~9 min) · bucket nstags-admin-portal-prod (private, 4 objects) · CloudFront E6ZO88GIYCIZM (d3dxawj0jlzovu.cloudfront.net) FREE plan $0 + WAF, OAC auto policy, root index.html, 403→/index.html 200, TLSv1.3 · GoDaddy admin CNAME verified. OWNER SIGNED IN IN PROD (MFA → adminMe → OWNER_ADMIN). Publish flow = S3 upload + invalidation /* + VERIFY it appears. Inc 1 SPA ships to this bucket. As-built: runbook §5.", added:"07-04"},
   {id:"S51BIBLE", title:"Bible sync for the admin-portal arc (ADR-066/067, V4 admin stack doc, V12 digest)", area:"Product", prio:"P2", status:"pending", who:"Claude", mile:"M3",
    note:"Pending next session (or a parallel pass): V4 new doc for NsTagsAdminStack + staff-auth, V8 admin-portal section, V12 digest 066/067 (65 ADRs), V0 INDEX delta, FUTURE_SCOPE. ADR INDEX already carries 066/067 rows.", added:"07-04"},
   {id:"S50ADS", title:"Partner promotions / store ad revenue — PARKED for development", area:"Product", prio:"P2", status:"hold", who:"Nitin", mile:"M2",

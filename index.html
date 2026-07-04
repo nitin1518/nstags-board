@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-07-04 · session 050 CLOSED (ADR-064 Dashboard note-capture: shared insight card both apps, capture in place, reflect-bounce gone; Bible synced 046-050; OWNER BUILDS + COMMIT PENDING)";
+const LAST_UPDATED = "2026-07-04 · session 050+ CLOSED (nstags.com LIVE: storyline + FILM + infographic + contact chooser + brand rule enforced · Bible synced incl. V8 website section · ADR-064 in source, APP BUILDS PENDING)";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -238,6 +238,16 @@ let TASKS = [
    note:"Parallel owner-directed session synced 046-049 (untouched). 050 delta added: V0 INDEX covers-through + delta para, V6/01 new §11 + annotations, V7 §13 update, V12 62 ADRs + 064 bullet, V5 §14 chip note, FUTURE_SCOPE note-capture → DONE. ADR-064 file + 01_DECISIONS/INDEX row; IMPLEMENTATION_HANDOFF 050 block (Insights design = 100% implemented).", added:"07-04"},
   {id:"S50SHIP", title:"Ship 050: clear index.lock → commit+push → Android build → iOS build → verify", area:"Android", prio:"P0", status:"current", who:"Nitin", mile:"M1",
    note:"Stale .git/index.lock from the parallel Bible session blocks the commit — remove it first (only if no git is running). ONE commit covers Bible 046-049 sync + all of 050 (single-quoted message). Then ./gradlew :app:assembleDebug (the real @Composable gate), then Xcode. On device: note a chip+note on the Dashboard card, relaunch, see 'Last time, you noted…' with age.", added:"07-04"},
+
+  // --- Session 050 continuation (2026-07-04) — nstags.com website ---
+  {id:"S50WEB", title:"nstags.com marketing site v1 — the day storyline (ADR-065)", area:"Web", prio:"P1", status:"current", who:"Claude", mile:"M3",
+   note:"BUILT + iterating on owner feedback (3 rounds done: storyline restructure, copy-honesty pass, estimate tags). Single-file static site, Signal Dark tokens verbatim, 8-chapter 'One day with nsTags' rail (attendance, live day sim, floor heat, interactive campaign launch, memory-loop read, night watch/alerts, week wrap, What's New), live recreated app UI (no screenshots). Source: 04_BUSINESS/design_outputs/2026-07-04_website/OUTPUTS/. Copy rules: no never-claims (cameras may come later), ESTIMATE tags on counting surfaces, no em-dashes/hardware terms.", added:"07-04"},
+  {id:"S50WEBDEP", title:"Deploy www.nstags.com — LIVE (S3 + CloudFront Free plan + ACM + GoDaddy)", area:"Infra", prio:"P1", status:"done", who:"Claude+Nitin", mile:"M3",
+   note:"LIVE at https://www.nstags.com (2026-07-04, Claude-driven via Chrome, owner entered GoDaddy auth codes). Bucket nstags-website-prod (private, ap-south-1) · cert ed8ce63d ISSUED · distribution E1ZIIJTKNZ5URD (d1vjkte0hdcgl9.cloudfront.net) on CloudFront's FREE plan ($0/mo, WAF+TLS incl.) · root object + 403→index · www CNAME + apex 301 forwarding (apex https cert activates within hours). As-built in the runbook. Updates: S3 upload + invalidation. Later: lead-form Lambda+SES. Cost-lens flag: two older pay-as-you-go distributions (demo/offers) worth a review.", added:"07-04"},
+  {id:"S50FILM", title:"THE NSTAGS FILM — 56s cinematic code film, LIVE on nstags.com", area:"Web", prio:"P1", status:"done", who:"Claude", mile:"M3",
+   note:"LIVE (deployed + verified act by act in production). 'Watch the film · 1 min' in the hero opens a full-screen player: 5 acts (street dawn + silhouettes → top-down visitors → presence-to-numbers HUD → reads materialize → 2:14am night watch) + end card CTA. Deterministic timeline (pause/act-seek/replay exact), Ken Burns camera, fade transitions, element pools, reduced-motion storyboard fallback. +29KB (site total ~128KB). mp4/GIF for social = screen-record this master. Design record: BRIEF.md Round 5.", added:"07-04"},
+  {id:"S50ADS", title:"Partner promotions / store ad revenue — PARKED for development", area:"Product", prio:"P2", status:"hold", who:"Nitin", mile:"M2",
+   note:"Owner concept (2026-07-04): stores run promotions for OUTSIDE brands on the same campaign rails ('Ad is running'), owner approves the brand, store earns a revenue share; same honest measurement (claims/redemptions/lift vs usual). Shown on the website as an open item (campaign chapter card + What's New 'Soon' row). Before build: needs an ADR (marketplace model, approval flow, payout/billing, DPDP posture for third-party content), backend lanes + app surfaces. Parked until owner reopens.", added:"07-04"},
   // --- Session 046 (2026-07-02) — design-adjacent build + copy scrub + Pulse fixes + Insights design ---
   {id:"S46INS", title:"Implement Insights design — Phase 1 (NSUpgradeNudge + FREE/STARTER reads)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",
    note:"DONE in session 047 (see S47INS). Design source: 04_BUSINESS/design_outputs/2026-07-02_insights/OUTPUTS/.", added:"07-02"},

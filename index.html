@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-07-04 · session 048 (What's New seed refreshed + Phase C environment rollup LIVE + 'Store environment' Dashboard tile verified on iOS)";
+const LAST_UPDATED = "2026-07-04 · session 049 CLOSED (Dashboard Pulse cross-signal layer SHIPPED: marketing scorecard + ranked lead story + legend/colour fixes + thin-data guards LIVE; footfall×temp cross-signal read DEPLOYED, ships dormant)";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -214,8 +214,22 @@ let TASKS = [
    note:"DEPLOYED LIVE + tile verified on iOS. ADR-063: env only in live_summary (24h TTL, no lake copy) → HOURLY fold not nightly. sensor_env_daily + SensorEnvRollupFinalize (:35 UTC=:05 IST, catchup cap 22) + EnvTrendHandler/Query.environmentTrend, all in NsTagsFootfallRollupStack (497/500 held). Primary-device = ble_node F09E9E22BB44 (radar has no env). Catchup 22h → 44 rows. Runbook 03_BACKEND/2026-07-04_phaseC_env_rollup_deploy_runbook.md.", added:"07-04"},
   {id:"S48TILE", title:"Dashboard 'Store environment' tile (Android + iOS)", area:"iOS", prio:"P1", status:"current", who:"Nitin", mile:"M1",
    note:"Source complete both platforms; iOS BUILT + VERIFIED (band 37-42°C, '1 of 7 days'). Hourly min..max envelope + avg line (gaps stay gaps), honest-silent when no data, not in the 60s loop. UNCOMMITTED at close; ANDROID BUILD PENDING; commit+push then build Android.", added:"07-04"},
-  {id:"S48NEXT", title:"Next queue: ADR-056 Inc 3 walk · note-capture · temp×footfall read", area:"Product", prio:"P1", status:"next", who:"Nitin", mile:"M1",
-   note:"Inc 3 = owner's clean single-person MOVING walk → target-trail gate → trails + floor-map V2 (options parked). Dashboard note-capture (ADR-039) if owner reopens. Temp×footfall cross-signal ('colder days run quieter') once ~7d env history accrues (~2026-07-11). ADR-057 V2 floor map when scoped.", added:"07-04"},
+  {id:"S48TILE2", title:"Dashboard 'Store environment' tile — Android build", area:"Android", prio:"P1", status:"done", who:"Nitin", mile:"M1",
+   note:"Committed + built both platforms (049). Tile live.", added:"07-04"},
+
+  // --- Session 049 (2026-07-04) — Dashboard 'Pulse' vision cross-signal layer ---
+  {id:"S49SCORE", title:"Marketing scorecard — multi-campaign period fold (both apps)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"LIVE on device. CLIENT fold (no backend): this month's ACTIVE/ENDED campaigns → per-campaign attribution (≤12, parallel) → headline + ranked lift bars + best performer; hidden when nothing ran. Replaced the single-active card. Commits c44a8af/92db255/e939963.", added:"07-04"},
+  {id:"S49LEAD", title:"Ranked lead-story engine (deterministic, both apps)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"LIVE. composeLeadStory/leadStory scores marketing-win / today-vs-typical / week-over-week / peer (base tiers + magnitude) → single top templated headline; hides when none clear their bar. AI phrasing deferred (owner: 'deterministic ranked, AI later').", added:"07-04"},
+  {id:"S49PULSE", title:"Pulse legend + chart colour — distinct today/yesterday/projected (both apps)", area:"Design", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"LIVE after 3 rounds. Root cause: chart drew yesterday as accent@0.35 (all lines same hue). Added NSSparkline.ghostColorOverride → yesterday now NSInkMute grey; butt-cap dashes; legend swatches = stroked lines matching each series. NOTE: Android on Brass theme (gold), iOS on Signal (coral) — theme, not bug.", added:"07-04"},
+  {id:"S49GUARD", title:"Thin-data guards — hold early-day projection/verdict; peer ring needs 2+ peers (both apps)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"LIVE. enoughDay (≥3 open hrs AND ≥15% span) holds projected line + 'On pace' + 'vs usual' + lead-story today-vs-typical. VsPeers cohort<3 → 'Not enough nearby stores to rank yet'. Pulse model verified correct; these guard presentation. Commit 0421480.", added:"07-04"},
+  {id:"S49TEMP", title:"Footfall×temperature cross-signal read (backend)", area:"Backend", prio:"P1", status:"done", who:"Claude", mile:"M1",
+   note:"DEPLOYED LIVE (NsTagsBackendStack, owner-run) + office MONTH/YEAR footfall_insights rows deleted to regen. tempFootfallCandidate pairs sensor_env_daily.t_avg × footfall_breakdown_daily per IST day, median split, emits crosssignal_temp_quiet/_busy at ≥12% gap (guards ≥10 days/≥3°C). CROSS_SIGNAL, MONTH/YEAR, no app change. SHIPS DORMANT (~2026-07-18). Committed 74d5f0e. Runbook 03_BACKEND/2026-07-04_insights_temp_crosssignal_deploy_runbook.md.", added:"07-04"},
+  {id:"S49NEXT", title:"Next queue: ADR-056 Inc 3 walk · note-capture · AI-phrased lead story", area:"Product", prio:"P1", status:"next", who:"Nitin", mile:"M1",
+   note:"Inc 3 = clean single-person MOVING walk → target-trail gate → trails + floor-map V2 (options parked). Dashboard note-capture (ADR-039) if owner reopens. AI-phrased lead story = cached Bedrock layer over the ranked engine. Optional: early-day guard on the 'This week -47%' partial-week card. ADR-057 V2 floor map when scoped.", added:"07-04"},
   // --- Session 046 (2026-07-02) — design-adjacent build + copy scrub + Pulse fixes + Insights design ---
   {id:"S46INS", title:"Implement Insights design — Phase 1 (NSUpgradeNudge + FREE/STARTER reads)", area:"iOS", prio:"P1", status:"done", who:"Claude", mile:"M1",
    note:"DONE in session 047 (see S47INS). Design source: 04_BUSINESS/design_outputs/2026-07-02_insights/OUTPUTS/.", added:"07-02"},

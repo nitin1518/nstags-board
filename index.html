@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-07-05 · session 052 CLOSED (BIBLE SYNC done + XIAO ESP32-C6 badge scanner + BMP280 env board LIVE: employee ATTENDANCE works end-to-end on isolated hardware · ADR-069 MULTI-LOCATION ENVIRONMENT shipped backend + both apps, DEPLOYED · NEXT: commit everything + rebuild apps for the 0.0 env fix · carried: ADR-068 conversion/POS, Admin Portal Inc 2)";
+const LAST_UPDATED = "2026-07-14 · session 054 CLOSED (footfall accuracy firmware v0.6.0 FLASHED + VERIFIED on A/B board ECDA3B9D0D20 · ADR-075 per-sensor footfall DEPLOYED both apps: People-now card, per-sensor Boundary/RSSI, renames · ADR-076 Inc A backend DEPLOYED · ADR-077 multi-store-in-app ratified · A/B running vs entrance v0.1.1 · NEXT: Footfall tab picker UI, then mac_token dedup, then Your-stores design round · owner: git push pending)";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -195,6 +195,24 @@ const MILESTONES = [
   {id:"M5", title:"Consumer offers app", target:"", note:"Deferred per ADR-002 until the business app is in field."}
 ];
 let TASKS = [
+  // --- Session 054 (2026-07-13/14) — footfall accuracy + per-sensor surface ---
+  {id:"S54FW", title:"Firmware v0.6.0-footfall-accuracy (ADR-074) — in-venue distinct people, flashed + verified on A/B board", area:"Firmware", prio:"P0", status:"done", who:"Claude+owner", mile:"M4",
+   note:"Distance gate -> phone-class filter -> dup collapse; hero swap; additive pplg/sx* wire fields; shadow-tunable gate. Flashed ECDA3B9D0D20 via Claude-driven IDE; serial verified (merged=1 caught a Handoff twin). v0.1.1 untouched = rollback. A/B vs entrance >=7 days.", added:"07-13"},
+  {id:"S54CARD", title:"ADR-075 per-sensor footfall DEPLOYED — People-now card both apps + footfallBySensor/setFootfallVenueGate/setSensorArea", area:"Backend", prio:"P0", status:"done", who:"Claude+owner", mile:"M1",
+   note:"FootfallSensorsHandler satellite; per-sensor rows (unfiltered N + kept-out detail), Rename + Boundary slider, editable view title, name fallback area_label->devices.name. Owner verified on device (12 = 5+7).", added:"07-13"},
+  {id:"S54INCA", title:"ADR-076 Inc A backend — ownership-fenced deviceId on footfallToday/Range/Breakdown (DEPLOYED)", area:"Backend", prio:"P1", status:"done", who:"Claude+owner", mile:"M1",
+   note:"Absent deviceId = primary behaviour unchanged. Unblocks the tab picker with zero further deploys.", added:"07-13"},
+  {id:"S54PICKER", title:"Footfall tab per-sensor picker UI (chips All + per sensor) — both apps", area:"Android", prio:"P0", status:"next", who:"Claude", mile:"M1",
+   note:"ADR-076 Inc A UI; backend live. All = client-side sum w/ overlap note; fixes the primary-flip display quirk (tab currently shows the Office board).", added:"07-14"},
+  {id:"S54DEDUP", title:"ADR-076 Inc B — mac_token cross-sensor dedup (true store-day; also fixes brand rollup)", area:"Backend", prio:"P1", status:"next", who:"Claude", mile:"M2",
+   note:"Count a distinct token once per store-day across sensors. Checkpoint first; flag transform/schema impact before deploy.", added:"07-14"},
+  {id:"S54STORES", title:"ADR-077 'Your stores' design round — multi-store in the apps (brand-role league + drill-down)", area:"Design", prio:"P1", status:"next", who:"Claude", mile:"M1",
+   note:"brandOverview/brandLeague APIs live; decide role discovery, org self-serve vs seeded, live vs daily v1. Direction mockup shared in-chat 054.", added:"07-14"},
+  {id:"S54ABREVIEW", title:"A/B review after >=7 days -> production reflash decision + pplg adoption ADR", area:"Product", prio:"P1", status:"pending", who:"Owner+Claude", mile:"M4",
+   note:"Compare raw.pplg vs ep on real traffic; only then reflash entrance F09E9E22BB44 and consider app/pipeline headline switch.", added:"07-14"},
+  // --- Session 053 (2026-07-11) — attendance arc closed + POS/conversion (board rows summarized; detail in 06_SESSIONS/2026-07-11_session-053.md) ---
+  {id:"S53ARC", title:"Session 053 arc — ADR-068 POS/conversion V0 + ADR-071/072/073 attendance truth + consent Phase 1 (ALL DEPLOYED)", area:"Backend", prio:"P0", status:"done", who:"Claude+owner", mile:"M1",
+   note:"Catch-all board row added at 054 close (053 skipped the board update). Full detail: PROJECT_STATE 053 snapshot + session log.", added:"07-14"},
   // --- Session 052 (2026-07-05) — Bible sync + XIAO C6 attendance + multi-location env ---
   {id:"S52BIBLE", title:"Bible sync — the 051 admin-portal arc (V4 §10 full-code doc + V8 + V0/V12/FUTURE_SCOPE)", area:"Docs", prio:"P1", status:"done", who:"Claude", mile:"M3",
    note:"V4 §10 NsTagsAdminStack doc finished (§3-7: GraphQL contract + FULL code for staff-auth/admin-fleet-rollup/diagnostics-engine/admin-query-handler); V8 admin-portal section; V0 covers-through 051; V12 -> 65 ADRs; FUTURE_SCOPE Inc 2-5 + ADR-068 note. Uncommitted at close.", added:"07-05"},

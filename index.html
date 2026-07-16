@@ -176,7 +176,7 @@
 
 <script>
 /* ===== SOURCE OF TRUTH — Claude maintains TASKS + MILESTONES ===== */
-const LAST_UPDATED = "2026-07-14 · session 054 CLOSED (footfall accuracy firmware v0.6.0 FLASHED + VERIFIED on A/B board ECDA3B9D0D20 · ADR-075 per-sensor footfall DEPLOYED both apps: People-now card, per-sensor Boundary/RSSI, renames · ADR-076 Inc A backend DEPLOYED · ADR-077 multi-store-in-app ratified · A/B running vs entrance v0.1.1 · NEXT: Footfall tab picker UI, then mac_token dedup, then Your-stores design round · owner: git push pending)";
+const LAST_UPDATED = "2026-07-16 · session 055 post-close: ATTENDANCE TRUTH ARC shipped + verified on device (Minew docs ended the 053 card mystery: MWC02 factory-locked dual-frame; attendanceHubStatus + honest hub states + sensor line both apps; fw c6-badge-env-0.5.1 mBInfo detection flashed; pill/copy/back-stack polish) · attendance's ONLY gap = consent Phase 2 portal -> NEXT HEADLINE · earlier 055: Inc B dedup deployed+verified, schedule registry, ClusterDedup retired, Bible synced · owner: git push pending";
 const AREAS = ["iOS","Android","Web","Backend","Firmware","Design","Product","Infra"];
 const STATUSES = [
   {key:"current", label:"Current"},
@@ -204,10 +204,22 @@ let TASKS = [
    note:"Absent deviceId = primary behaviour unchanged. Unblocks the tab picker with zero further deploys.", added:"07-13"},
   {id:"S54PICKER", title:"Footfall tab per-sensor picker UI (chips All + per sensor) — both apps", area:"Android", prio:"P0", status:"done", who:"Claude", mile:"M1",
    note:"SHIPPED in 054 post-close continuation: chips All+per-sensor, All=DEFAULT client-side sum, both apps verified on device.", added:"07-14"},
-  {id:"S54DEDUP", title:"ADR-076 Inc B — mac_token cross-sensor dedup (true store-day; also fixes brand rollup)", area:"Backend", prio:"P1", status:"next", who:"Claude", mile:"M2",
-   note:"Count a distinct token once per store-day across sensors. Checkpoint first; flag transform/schema impact before deploy.", added:"07-14"},
+  {id:"S54DEDUP", title:"ADR-076 Inc B — mac_token store-day dedup DEPLOYED + VERIFIED (STORE#tenant rows, deviceId ALL, brand rollup, both apps)", area:"Backend", prio:"P1", status:"done", who:"Claude+owner", mile:"M2",
+   note:"Current-owner remap (lake tenant stamps stale by construction); verified STORE 07-13 raw 2918 = 1353+1565 exact, adj 979. Salts converged 07-15 (thing-group fix) -> dedup live forward. Runbook: 03_BACKEND/2026-07-14_adr076_incB_storeday_dedup_runbook.md.", added:"07-14"},
+  {id:"S55ATT", title:"Attendance truth arc — honest hub states + sensor line + fw 0.5.1 mBInfo detection (SHIPPED + verified on device)", area:"Backend", prio:"P0", status:"done", who:"Claude+owner", mile:"M1",
+   note:"Three causes fixed: consent gate now SAID not hidden; silent card woken (NFC) + mBInfo path catches UUID-divergent cards + battery; misdiagnosing copy replaced. Runbook: 03_BACKEND/2026-07-16_attendance_truth_runbook.md.", added:"07-16"},
+  {id:"S55CONSENT", title:"Consent Phase 2 — employee grant portal (NsTagsConsentStack, public surface) — the ONLY remaining attendance gap", area:"Backend", prio:"P0", status:"next", who:"Claude", mile:"M1",
+   note:"The shared link dead-ends today. Notice page + grant writing real consent_ref + evidence (badge-presence proof via discoverBadges). No owner-side agree button EVER (ADR-073). Spec: 053 starter sA.", added:"07-16"},
+  {id:"S55COHORT", title:"Cohort-lane remap — cohort-percentile-precompute still groups the lake by board-published tenant (flagged defect)", area:"Backend", prio:"P1", status:"next", who:"Claude", mile:"M2",
+   note:"Same fetchDeviceTenantMap + remapCteSql pattern as the finalizers; DPDP wrinkle noted in Inc B runbook s0. Checkpoint first; recompute after.", added:"07-15"},
+  {id:"S55INCC", title:"Inc C — store-level hourly rollups (restores All-view typical/projected forecasts)", area:"Backend", prio:"P2", status:"next", who:"Claude", mile:"M2",
+   note:"STORE rows in footfall_hourly_daily via the same remap pattern; then the apps stop nulling models under All. UX-positive cost work.", added:"07-15"},
+  {id:"S55REG", title:"00_SCHEDULE_REGISTRY.md — all 21 EventBridge rules + cost verdict + ClusterDedup retired", area:"Ops", prio:"P1", status:"done", who:"Claude+owner", mile:"M1",
+   note:"External cost review verified against code: registry + retirement accepted; auth-cache and DashboardSnapshot-now claims rejected with evidence; 1-min alert lane kept (UX). ClusterDedup archived under _retired; CFN removal rides next backend deploy.", added:"07-15"},
+  {id:"S55TOKENS", title:"Shared-token diagnostic check (~07-17) — expect non-zero merges now salts converged", area:"Ops", prio:"P2", status:"pending", who:"Owner", mile:"M4",
+   note:"Query in Inc B runbook s5. Still 0 after busy days -> suspect coverage/venue gate, not salt.", added:"07-15"},
   {id:"S54STORES", title:"ADR-077 'Your stores' design round — multi-store in the apps (brand-role league + drill-down)", area:"Design", prio:"P1", status:"next", who:"Claude", mile:"M1",
-   note:"brandOverview/brandLeague APIs live; decide role discovery, org self-serve vs seeded, live vs daily v1. Direction mockup shared in-chat 054.", added:"07-14"},
+   note:"brandOverview/brandLeague APIs live; prerequisites (076 picker + Inc B) SHIPPED. Decide role discovery, org self-serve vs seeded, live vs daily v1. Fold dashboard-read consolidation into this design (cost-review verdict). Direction mockup shared in-chat 054.", added:"07-14"},
   {id:"S54ABREVIEW", title:"A/B review after >=7 days -> production reflash decision + pplg adoption ADR", area:"Product", prio:"P1", status:"pending", who:"Owner+Claude", mile:"M4",
    note:"Compare raw.pplg vs ep on real traffic; only then reflash entrance F09E9E22BB44 and consider app/pipeline headline switch.", added:"07-14"},
   // --- Session 053 (2026-07-11) — attendance arc closed + POS/conversion (board rows summarized; detail in 06_SESSIONS/2026-07-11_session-053.md) ---
